@@ -281,7 +281,7 @@ describe('Delete User Script', () => {
 
     beforeEach(() => {
       const queryBuilder = new ScriptQueryBuilder();
-      clientStub = { logged_query: sinon.stub() };
+      clientStub = { query_and_log: sinon.stub() };
 
       queryBuilderMock = sinon.mock(queryBuilder);
       const clientQueryAdapter = new ClientQueryAdapter();
@@ -294,7 +294,7 @@ describe('Delete User Script', () => {
         // given
         const userId = 5186;
         subject.userId = userId;
-        clientStub.logged_query.resolves({
+        clientStub.query_and_log.resolves({
           rows: [{ count: 0 }]
         });
 
@@ -313,7 +313,7 @@ describe('Delete User Script', () => {
         // given
         const userId = 5186;
         subject.userId = userId;
-        clientStub.logged_query.resolves({
+        clientStub.query_and_log.resolves({
           rows: [{ count: 1 }]
         });
 
@@ -421,7 +421,7 @@ describe('Delete User Script', () => {
 
         // then
         return promise.then(() => {
-          sinon.assert.callCount(clientStub.logged_query, 4);
+          sinon.assert.callCount(clientStub.query_and_log, 4);
         });
       });
     });
