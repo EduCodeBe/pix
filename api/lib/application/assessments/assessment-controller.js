@@ -14,6 +14,8 @@ const solutionRepository = require('../../infrastructure/repositories/solution-r
 const queryParamsUtils = require('../../infrastructure/utils/query-params-utils');
 const logger = require('../../infrastructure/logger');
 
+const useCases  = require('../../domain/usecases');
+
 const { NotFoundError, NotCompletedAssessmentError, AssessmentEndedError, ObjectValidationError } = require('../../domain/errors');
 
 function _doesAssessmentExistsAndIsCompleted(assessment) {
@@ -107,6 +109,10 @@ module.exports = {
       .get(request.params.id)
       .then((assessment) => {
 
+        if(assessmentService.isPreviewAssessment(assessment)) {
+          return useCases.getNextChallengeForPreview({});
+        }
+
         if (assessmentService.isCertificationAssessment(assessment)) {
           console.log('Controller - if isCertificationAssessment(assessment)');
           return assessmentService
@@ -114,7 +120,7 @@ module.exports = {
             .then((challenge) => challenge.challengeId);
         }
 
-        console.log('Controller - If Demo / Placement / Preview');
+        console.log('Controller - If Demo / Placement');
         return assessmentService.getAssessmentNextChallengeId(assessment, request.params.challengeId);
       })
       .then(challengeRepository.get)
